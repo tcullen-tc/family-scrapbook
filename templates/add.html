@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Adventure</title>
+</head>
+<body>
+    <h1>Add Adventure</h1>
+
+    <form method="POST">
+        <p>
+            <label>Which event?</label><br>
+            <select name="event_id">
+                {% for event in events %}
+                    <option value="{{ event['id'] }}">{{ event["name"] }}</option>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>
+            <label>Adventure Title:</label><br>
+            <input type="text" name="title" placeholder="Dinosaur Valley, Campfire, Ice Cream Stop">
+        </p>
+
+        <p>
+            <label>Date:</label><br>
+            <input type="date" name="date">
+        </p>
+
+        <p>
+            <label>Who was there?</label><br>
+            <input type="text" name="people">
+        </p>
+
+        <p>
+            <label>Today's Adventure:</label><br>
+            <textarea name="story" rows="8" cols="60"></textarea>
+        </p>
+
+        <p>
+            <label>Favorite Memory:</label><br>
+            <textarea name="favorite_memory" rows="4" cols="60"></textarea>
+        </p>
+
+        <p>
+            <label>Funniest Moment:</label><br>
+            <textarea name="funniest_moment" rows="4" cols="60"></textarea>
+        </p>
+
+        <p>
+            <label>Something We Learned:</label><br>
+            <textarea name="something_learned" rows="4" cols="60"></textarea>
+        </p>
+
+        <p>
+            <label>Something We're Thankful For:</label><br>
+            <textarea name="thankful_for" rows="4" cols="60"></textarea>
+        </p>
+
+        <p>
+            <label>Rating:</label><br>
+            <select name="rating">
+                <option value="5">5 stars</option>
+                <option value="4">4 stars</option>
+                <option value="3">3 stars</option>
+                <option value="2">2 stars</option>
+                <option value="1">1 star</option>
+            </select>
+        </p>
+
+        <p>
+            <button type="submit">Save Adventure</button>
+        </p>
+    </form>
+
+    <p><a href="/">← Back to Home</a></p>
+</body>
+</html>

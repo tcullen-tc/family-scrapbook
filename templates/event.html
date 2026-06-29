@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ event["name"] }}</title>
+</head>
+<body>
+    <h1>{{ event["name"] }}</h1>
+
+    <p><strong>Year:</strong> {{ event["year"] }}</p>
+    <p><strong>Location:</strong> {{ event["location"] }}</p>
+    <p>{{ event["description"] }}</p>
+
+    <p><a href="/add">➕ Add Adventure</a></p>
+
+    <h2>Adventures</h2>
+
+    {% if posts %}
+        <ul>
+            {% for post in posts %}
+                <li>
+                    <strong>{{ post["title"] }}</strong><br>
+                    {{ post["date"] }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No adventures have been added yet.</p>
+    {% endif %}
+
+    <p><a href="/">← Back to Home</a></p>
+</body>
+</html>
