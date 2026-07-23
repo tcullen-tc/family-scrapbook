@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ member.name }} - Family Memories</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #f5f0e8;
+            color: #3d2b1f;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .nav {
+            background: #3d2b1f;
+            padding: 15px 30px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .nav a {
+            color: #f5f0e8;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        .nav a:hover {
+            color: #b8943c;
+        }
+        .profile-card {
+            background: #f5f0e8;
+            padding: 40px;
+            border-radius: 15px;
+            border: 2px solid #b8943c;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .profile-card .avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #b8943c;
+            margin-bottom: 15px;
+        }
+        .profile-card .avatar-placeholder {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: #e8e0d5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px auto;
+            border: 4px solid #b8943c;
+            font-size: 60px;
+            color: #8b6b4a;
+        }
+        .profile-card h1 {
+            color: #3d2b1f;
+            font-size: 36px;
+            margin: 0;
+        }
+        .profile-card .nickname {
+            color: #6b4c3a;
+            font-size: 20px;
+            font-style: italic;
+            margin: 5px 0;
+        }
+        .profile-card .birth-date {
+            color: #6b4c3a;
+            font-size: 16px;
+            margin: 5px 0;
+        }
+        .profile-card .bio {
+            color: #3d2b1f;
+            font-size: 16px;
+            margin: 15px 0 0 0;
+            line-height: 1.6;
+            text-align: left;
+        }
+        .profile-card .actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .btn-edit {
+            background: #b8943c;
+            color: white;
+            padding: 10px 25px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 16px;
+            display: inline-block;
+        }
+        .btn-edit:hover {
+            background: #a08030;
+        }
+        .btn-back {
+            background: #3d2b1f;
+            color: white;
+            padding: 10px 25px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 16px;
+            display: inline-block;
+        }
+        .btn-back:hover {
+            background: #2d1f13;
+        }
+        .memories-section {
+            background: #faf6ef;
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #e8e0d5;
+        }
+        .memories-section h2 {
+            color: #3d2b1f;
+            font-size: 24px;
+            margin-top: 0;
+            border-bottom: 2px solid #b8943c;
+            padding-bottom: 10px;
+        }
+        .memory-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #b8943c;
+            margin-bottom: 10px;
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s;
+        }
+        .memory-item:hover {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .memory-item .title {
+            color: #3d2b1f;
+            margin: 0;
+            font-size: 18px;
+        }
+        .memory-item .details {
+            color: #6b4c3a;
+            margin: 5px 0 0 0;
+            font-size: 14px;
+        }
+        .memory-item .arrow {
+            color: #b8943c;
+            font-size: 20px;
+            float: right;
+        }
+        .no-memories {
+            text-align: center;
+            padding: 20px;
+            color: #6b4c3a;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<div class="nav">
+    <div>
+        <a href="/">🏠 Home</a>
+        <span style="margin: 0 15px; color: #8b6b4a;">|</span>
+        <a href="/family-members">👨‍👩‍👧‍👦 Family</a>
+        <span style="margin: 0 15px; color: #8b6b4a;">|</span>
+        <span style="color: #b8943c;">{{ member.name }}</span>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- Profile Card -->
+    <div class="profile-card">
+        {% if member.photo %}
+        <img src="/static/uploads/{{ member.photo }}" alt="{{ member.name }}" class="avatar">
+        {% else %}
+        <div class="avatar-placeholder">👤</div>
+        {% endif %}
+
+        <h1>{{ member.name }}</h1>
+        {% if member.nickname %}
+        <p class="nickname">"{{ member.nickname }}"</p>
+        {% endif %}
+        {% if member.birth_date %}
+        <p class="birth-date">🎂 {{ member.birth_date }}</p>
+        {% endif %}
+        {% if member.email %}
+        <p class="email">📧 {{ member.email }}</p>
+        {% endif %}
+        {% if member.bio %}
+        <p class="bio">{{ member.bio }}</p>
+        {% endif %}
+
+        <div class="actions">
+            <a href="/edit-family-member/{{ member.id }}" class="btn-edit">✏️ Edit Profile</a>
+            <a href="/family-members" class="btn-back">← Back to Family</a>
+        </div>
+    </div>
+
+    <!-- Memories -->
+    <div class="memories-section">
+        <h2>📖 Memories with {{ member.name }}</h2>
+
+        {% if memories %}
+            {% for memory in memories %}
+            <a href="/memory/{{ memory.id }}" class="memory-item">
+                <span class="arrow">→</span>
+                <h3 class="title">{{ memory.title }}</h3>
+                <p class="details">{{ memory.event_name }} • {{ memory.date }}</p>
+            </a>
+            {% endfor %}
+        {% else %}
+            <p class="no-memories">📖 {{ member.name }} hasn't been tagged in any memories yet.</p>
+        {% endif %}
+    </div>
+
+</div>
+
+</body>
+</html>

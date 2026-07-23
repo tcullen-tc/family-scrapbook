@@ -1,0 +1,18 @@
+## Project Assets
+
+All permanent visual assets are stored in:
+
+static/images/
+
+Subfolders include:
+
+- hero_frame/
+- icons/
+- backgrounds/
+- decorations/
+
+User-uploaded content is never stored here.
+
+User photos are stored in:
+
+static/uploads/

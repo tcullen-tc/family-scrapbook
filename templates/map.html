@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adventure Map - Family Memories</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        .custom-div-icon {
+            font-size: 32px !important;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #f5f0e8;
+            color: #3d2b1f;
+            margin: 0;
+            padding: 0;
+        }
+        .nav {
+            background: #3d2b1f;
+            padding: 15px 30px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .nav a {
+            color: #f5f0e8;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        .nav a:hover {
+            color: #b8943c;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 3px solid #b8943c;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            color: #3d2b1f;
+            font-size: 36px;
+            margin: 0;
+        }
+        .header p {
+            color: #6b4c3a;
+            font-size: 16px;
+            font-style: italic;
+        }
+        #map {
+            height: 550px;
+            border-radius: 15px;
+            border: 3px solid #b8943c;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .legend {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #b8943c;
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        .legend-item .marker {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #6b1a2e;
+            border: 2px solid #b8943c;
+        }
+        .legend-item .marker-memory {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #2d5a27;
+            border: 2px solid #b8943c;
+        }
+        .no-memories {
+            text-align: center;
+            padding: 40px;
+            background: #faf6ef;
+            border-radius: 12px;
+            border: 2px dashed #b8943c;
+        }
+        .no-memories h2 {
+            color: #3d2b1f;
+        }
+        .no-memories p {
+            color: #6b4c3a;
+            font-size: 16px;
+        }
+        .btn-update {
+            background: #b8943c;
+            color: white;
+            padding: 10px 25px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        .btn-update:hover {
+            background: #a08030;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #8b6b4a;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<div class="nav">
+    <div>
+        <a href="/">🏠 Home</a>
+        <span style="margin: 0 15px; color: #8b6b4a;">|</span>
+        <a href="/family-members">👨‍👩‍👧‍👦 Family</a>
+        <span style="margin: 0 15px; color: #8b6b4a;">|</span>
+        <span style="color: #b8943c;">🗺️ Map</span>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="header">
+        <h1>🗺️ Adventure Map</h1>
+        <p>Every flag represents a memory from your family's adventures</p>
+    </div>
+
+    {% if memories %}
+        <!-- Map -->
+        <div id="map"></div>
+
+                <!-- Legend -->
+        <div class="legend">
+            <div class="legend-item">
+                <span>🖱️ Click a flag to view a memory</span>
+            </div>
+        </div>
+
+        <!-- Count -->
+        <p style="text-align: center; color: #6b4c3a; margin-top: 10px;">
+            Showing {{ memories|length }} memories with locations
+        </p>
+    {% else %}
+        <!-- No memories with coordinates -->
+        <div class="no-memories">
+            <h2>📍 No Memories with Locations Yet</h2>
+            <p>Add locations to your memories, then update the map!</p>
+            <a href="/update-coordinates" class="btn-update">🔄 Update Map Locations</a>
+        </div>
+    {% endif %}
+
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="/" style="color: #6b4c3a; text-decoration: none;">← Back to Home</a>
+    </div>
+
+    <div class="footer">
+        Map data from OpenStreetMap • Family Memories "Hi Cash"
+    </div>
+
+</div>
+
+<!-- Leaflet JavaScript -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+{% if memories %}
+<script>
+    // Initialize the map
+    var map = L.map('map').setView([39.8283, -98.5795], 4);
+
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 18
+    }).addTo(map);
+
+   // Create a custom flag icon
+var customIcon = L.divIcon({
+    className: 'custom-div-icon',
+    html: '🚩',
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
+    popupAnchor: [0, -40]
+});
+
+    // Loop through memories and add markers
+    var memories = [
+        {% for memory in memories %}
+        {
+            id: {{ memory.id }},
+            title: "{{ memory.title }}",
+            location: "{{ memory.adventure_day }}",
+            event: "{{ memory.event_name }}",
+            lat: {{ memory.latitude }},
+            lng: {{ memory.longitude }}
+        },
+        {% endfor %}
+    ];
+
+memories.forEach(function(m) {
+    var popupContent = `
+        <div style="font-family: Georgia, serif; max-width: 200px;">
+            <h4 style="margin: 0 0 5px 0; color: #3d2b1f;">${m.title}</h4>
+            <p style="margin: 2px 0; font-size: 13px; color: #6b4c3a;">📍 ${m.location}</p>
+            <p style="margin: 2px 0; font-size: 12px; color: #8b6b4a;">${m.event}</p>
+            <a href="/memory/${m.id}" style="display: inline-block; margin-top: 5px; padding: 5px 15px; background: #b8943c; color: white; text-decoration: none; border-radius: 5px; font-size: 12px;">View Memory →</a>
+        </div>
+    `;
+
+   var marker = L.marker([m.lat, m.lng], { icon: customIcon })
+
+        .addTo(map)
+        .bindPopup(popupContent);
+});
+
+    // Adjust map to fit all markers
+    if (memories.length > 1) {
+        var group = L.featureGroup();
+        memories.forEach(function(m) {
+            group.addLayer(L.marker([m.lat, m.lng]));
+        });
+        map.fitBounds(group.getBounds().pad(0.2));
+    } else if (memories.length === 1) {
+        map.setView([memories[0].lat, memories[0].lng], 8);
+    }
+</script>
+{% endif %}
+
+</body>
+</html>

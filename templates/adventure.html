@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Memories</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #f5f0e8;
+            color: #3d2b1f;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .nav {
+            background: #3d2b1f;
+            padding: 15px 30px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .nav a {
+            color: #f5f0e8;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        .nav a:hover {
+            color: #b8943c;
+        }
+        .memory-header {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            background: #f5f0e8;
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid #b8943c;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        .memory-header .info {
+            flex: 1;
+            min-width: 250px;
+        }
+        .memory-header .info h1 {
+            color: #3d2b1f;
+            font-size: 36px;
+            margin: 0 0 10px 0;
+        }
+        .memory-header .info p {
+            color: #6b4c3a;
+            font-size: 18px;
+            margin: 5px 0;
+        }
+        .memory-header .hero {
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+        }
+        .memory-header .hero img {
+            max-width: 300px;
+            max-height: 250px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 3px solid #b8943c;
+        }
+        .memory-header .hero .no-photo {
+            background: #e8e0d5;
+            padding: 40px 20px;
+            border-radius: 10px;
+            border: 2px dashed #b8943c;
+        }
+        .story-box {
+            background: #faf6ef;
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #e8e0d5;
+            margin-bottom: 30px;
+        }
+        .story-box h3 {
+            color: #6b1a2e;
+            font-size: 22px;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        .story-box p {
+            color: #3d2b1f;
+            font-size: 18px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+        .memory-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .memory-card {
+            background: #f5f0e8;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #b8943c;
+        }
+        .memory-card h4 {
+            color: #6b1a2e;
+            margin: 0 0 10px 0;
+        }
+        .memory-card p {
+            color: #3d2b1f;
+            margin: 0;
+            line-height: 1.6;
+        }
+        .slideshow {
+            background: #f5f0e8;
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid #b8943c;
+            margin-bottom: 30px;
+        }
+        .slideshow h3 {
+            color: #6b1a2e;
+            font-size: 22px;
+            margin-top: 0;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .slideshow-container {
+            position: relative;
+            max-width: 700px;
+            margin: 0 auto;
+            background: #2c1810;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .slideshow-container .slide {
+            display: none;
+            text-align: center;
+        }
+        .slideshow-container .slide.active {
+            display: block;
+        }
+        .slideshow-container .slide img {
+            max-width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+        .slideshow-container .slide .caption {
+            color: #f5f0e8;
+            font-size: 16px;
+            font-style: italic;
+            margin: 15px 0 5px 0;
+            text-align: center;
+            background: rgba(0,0,0,0.5);
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .slideshow-container .slide .counter {
+            color: #8b6b4a;
+            font-size: 14px;
+            margin: 10px 0 0 0;
+            text-align: center;
+        }
+        .slideshow-container .no-photos {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .slideshow-container .no-photos p {
+            color: #8b6b4a;
+            font-size: 18px;
+            margin: 0;
+        }
+        .slideshow-container .no-photos .icon {
+            font-size: 48px;
+        }
+        .slideshow-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.6);
+            color: white;
+            border: 2px solid #b8943c;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s;
+        }
+        .slideshow-btn:hover {
+            background: rgba(184, 148, 60, 0.8);
+        }
+        .slideshow-btn.prev {
+            left: 10px;
+        }
+        .slideshow-btn.next {
+            right: 10px;
+        }
+        .dots {
+            text-align: center;
+            margin-top: 15px;
+        }
+        .dots .dot {
+            cursor: pointer;
+            height: 12px;
+            width: 12px;
+            margin: 0 5px;
+            background-color: #555;
+            border-radius: 50%;
+            display: inline-block;
+            transition: background-color 0.3s;
+            border: 2px solid #3d2b1f;
+        }
+        .dots .dot.active {
+            background-color: #b8943c;
+        }
+        .action-buttons {
+            text-align: center;
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .action-buttons .btn-back {
+            background: #3d2b1f;
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 16px;
+            display: inline-block;
+        }
+        .action-buttons .btn-edit {
+            background: #b8943c;
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 16px;
+            display: inline-block;
+            box-shadow: 0 4px 10px rgba(184, 148, 60, 0.3);
+        }
+        .action-buttons .btn-edit:hover {
+            background: #a08030;
+        }
+        .action-buttons .btn-back:hover {
+            background: #2d1f13;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<div class="nav">
+    <div>
+        <a href="/">🏠 Home</a>
+        <span style="margin: 0 15px; color: #8b6b4a;">|</span>
+        <a href="/family-members">👨‍👩‍👧‍👦 Family</a>
+        <span style="margin: 0 15px; color: #8b6b4a;">|</span>
+        <span style="color: #b8943c;">📖 {{ adventure.title }}</span>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- Memory Header -->
+    <div class="memory-header">
+        <div class="info">
+            <p style="color: #6b1a2e; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; margin: 0 0 5px 0;">📖 Memory Page</p>
+            <h1>{{ adventure.title }}</h1>
+            <p>📍 {{ adventure.adventure_day }}</p>
+            <p>📅 {{ adventure.date }}</p>
+            <p>👨‍👩‍👧‍👦 {{ adventure.people }}</p>
+                        <p>👨‍👩‍👧‍👦 {{ adventure.people }}</p>
+            {% if tagged_people %}
+            <p style="color: #6b4c3a; font-size: 16px; margin: 5px 0;">
+                🏷️ <strong>Tagged:</strong> 
+                {% for person in tagged_people %}
+                    <a href="/family-member/{{ person.id }}" style="color: #6b1a2e; text-decoration: none;">
+                        {{ person.name }}
+                    </a>{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+            {% endif %}
+            <p style="color: #8b6b4a; font-size: 14px; margin-top: 10px; font-style: italic;">{{ event.name }}</p>
+            <p style="color: #8b6b4a; font-size: 14px; margin-top: 10px; font-style: italic;">{{ event.name }}</p>
+        </div>
+        <div class="hero">
+            {% if adventure.adventure_photo %}
+            <img src="/static/uploads/{{ adventure.adventure_photo }}" alt="Hero Photo">
+            {% if adventure.hero_caption %}
+            <p style="color: #6b4c3a; font-size: 14px; font-style: italic; margin-top: 5px;">{{ adventure.hero_caption }}</p>
+            {% endif %}
+            {% else %}
+            <div class="no-photo">
+                <p style="color: #8b6b4a; font-size: 16px; margin: 0;">📸 No hero photo yet</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <!-- Slideshow -->
+    <div class="slideshow">
+        <h3>📸 Memory Photos</h3>
+
+        <div class="slideshow-container" id="slideshowContainer">
+            <div class="slides" id="slides">
+                {% if additional_photos %}
+                    {% for photo in additional_photos %}
+                    <div class="slide {% if loop.first %}active{% endif %}">
+                        <img src="/static/uploads/{{ photo.filename }}" alt="{{ photo.caption or 'Memory photo' }}">
+                        {% if photo.caption %}
+                        <div class="caption">"{{ photo.caption }}"</div>
+                        {% endif %}
+                        <div class="counter">Photo {{ loop.index }} of {{ additional_photos|length }}</div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="slide active">
+                        <div class="no-photos">
+                            <div class="icon">🖼️</div>
+                            <p>No Pictures Uploaded for this Memory</p>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% if additional_photos and additional_photos|length > 1 %}
+            <button class="slideshow-btn prev" onclick="changeSlide(-1)">◀</button>
+            <button class="slideshow-btn next" onclick="changeSlide(1)">▶</button>
+            <div class="dots" id="dots">
+                {% for photo in additional_photos %}
+                <span class="dot {% if loop.first %}active{% endif %}" onclick="currentSlide({{ loop.index }})"></span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Story -->
+    <div class="story-box">
+        <h3>✨ The Story</h3>
+        <p>{{ adventure.story }}</p>
+    </div>
+
+    <!-- Memory Cards -->
+    <div class="memory-cards">
+        {% if adventure.favorite_memory %}
+        <div class="memory-card">
+            <h4>❤️ Favorite Memory</h4>
+            <p>{{ adventure.favorite_memory }}</p>
+        </div>
+        {% endif %}
+
+        {% if adventure.funniest_moment %}
+        <div class="memory-card">
+            <h4>😂 Funniest Moment</h4>
+            <p>{{ adventure.funniest_moment }}</p>
+        </div>
+        {% endif %}
+
+        {% if adventure.something_learned %}
+        <div class="memory-card">
+            <h4>🌱 Something Learned</h4>
+            <p>{{ adventure.something_learned }}</p>
+        </div>
+        {% endif %}
+
+        {% if adventure.thankful_for %}
+        <div class="memory-card">
+            <h4>🙏 Thankful For</h4>
+            <p>{{ adventure.thankful_for }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+        <a href="/adventure/{{ adventure.event_id }}" class="btn-back">← Back to {{ event.name }}</a>
+        <a href="/edit-adventure/{{ adventure.id }}" class="btn-edit">✏️ Edit Memory</a>
+        <button onclick="openShareModal()" style="background: #2d5a27; color: white; padding: 12px 30px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; box-shadow: 0 4px 10px rgba(45, 90, 39, 0.3);">
+            📧 Share via Email
+        </button>
+    </div>
+
+    <!-- Comments Section -->
+    <div style="background: #f5f0e8; padding: 30px; border-radius: 15px; border: 2px solid #b8943c; margin-top: 30px;">
+        <h3 style="color: #6b1a2e; font-size: 22px; margin-top: 0; margin-bottom: 20px;">💬 Comments</h3>
+
+        <!-- Display existing comments -->
+        {% if comments %}
+            {% for comment in comments %}
+            <div style="background: #faf6ef; padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 3px solid #b8943c;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                    <strong style="color: #3d2b1f;">{{ comment.username }}</strong>
+                    <span style="color: #8b6b4a; font-size: 12px;">{{ comment.created_at }}</span>
+                </div>
+                <p style="color: #3d2b1f; margin: 5px 0 0 0; line-height: 1.5;">{{ comment.comment }}</p>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p style="color: #6b4c3a; font-size: 16px; font-style: italic;">No comments yet. Be the first to share your thoughts!</p>
+        {% endif %}
+
+        <!-- Add comment form -->
+        <form method="POST" action="/add-comment/{{ adventure.id }}" style="margin-top: 20px;">
+            <label style="display: block; color: #3d2b1f; font-weight: bold; margin-bottom: 5px;">Add a comment:</label>
+            <textarea name="comment" rows="3" placeholder="Share your thoughts about this memory..." style="width: 100%; padding: 12px; border: 2px solid #b8943c; border-radius: 8px; box-sizing: border-box; font-family: inherit; font-size: 16px; resize: vertical;"></textarea>
+            <button type="submit" style="background: #2d5a27; color: white; padding: 10px 25px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; margin-top: 10px;">
+                💬 Add Comment
+            </button>
+        </form>
+    </div>
+
+</div>
+
+</div>
+
+<script>
+    let slideIndex = 1;
+    let autoAdvanceInterval;
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.dot');
+
+    function showSlide(n) {
+        if (slides.length === 0) return;
+        if (n > slides.length) slideIndex = 1;
+        if (n < 1) slideIndex = slides.length;
+
+        slides.forEach(s => s.classList.remove('active'));
+        dots.forEach(d => d.classList.remove('active'));
+
+        slides[slideIndex - 1].classList.add('active');
+        if (dots.length > 0) {
+            dots[slideIndex - 1].classList.add('active');
+        }
+    }
+
+    function changeSlide(n) {
+        showSlide(slideIndex += n);
+        resetAutoAdvance();
+    }
+
+    function currentSlide(n) {
+        showSlide(slideIndex = n);
+        resetAutoAdvance();
+    }
+
+    function resetAutoAdvance() {
+        clearInterval(autoAdvanceInterval);
+        if (slides.length > 1) {
+            autoAdvanceInterval = setInterval(() => changeSlide(1), 5000);
+        }
+    }
+
+    // Start auto-advance
+    if (slides.length > 1) {
+        autoAdvanceInterval = setInterval(() => changeSlide(1), 5000);
+
+        // Pause on hover
+        const container = document.getElementById('slideshowContainer');
+        container.addEventListener('mouseenter', () => clearInterval(autoAdvanceInterval));
+        container.addEventListener('mouseleave', () => {
+            autoAdvanceInterval = setInterval(() => changeSlide(1), 5000);
+        });
+    }
+</script>
+        <!-- Share Modal -->
+    <div id="shareModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background: #f5f0e8; padding: 30px; border-radius: 15px; border: 2px solid #b8943c; max-width: 500px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
+            <h2 style="color: #3d2b1f; margin-top: 0;">📧 Share Memory</h2>
+            <p style="color: #6b4c3a; margin-bottom: 20px;">Send this memory to a family member via email.</p>
+
+            <form method="POST" action="/share-memory/{{ adventure.id }}">
+                <label style="display: block; color: #3d2b1f; font-weight: bold; margin-bottom: 5px;">Recipient Email:</label>
+                <input type="email" name="recipient_email" required placeholder="e.g., family@example.com" style="width: 100%; padding: 10px; border: 2px solid #b8943c; border-radius: 8px; box-sizing: border-box; margin-bottom: 15px;">
+
+                <label style="display: block; color: #3d2b1f; font-weight: bold; margin-bottom: 5px;">Share Format:</label>
+                <select name="share_format" style="width: 100%; padding: 10px; border: 2px solid #b8943c; border-radius: 8px; box-sizing: border-box; margin-bottom: 15px;">
+                    <option value="pdf">📄 PDF Document (professional, smaller)</option>
+                    <option value="photos">🖼️ Photos as Attachments (individual files)</option>
+                </select>
+
+                <label style="display: block; color: #3d2b1f; font-weight: bold; margin-bottom: 5px;">Personal Message (optional):</label>
+                <textarea name="personal_message" rows="3" placeholder="Add a personal note..." style="width: 100%; padding: 10px; border: 2px solid #b8943c; border-radius: 8px; box-sizing: border-box; font-family: inherit; margin-bottom: 15px;"></textarea>
+
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button type="button" onclick="closeShareModal()" style="background: #8b6b4a; color: white; padding: 10px 25px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;">Cancel</button>
+                    <button type="submit" style="background: #2d5a27; color: white; padding: 10px 25px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;">📧 Send Email</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openShareModal() {
+            document.getElementById('shareModal').style.display = 'flex';
+        }
+        function closeShareModal() {
+            document.getElementById('shareModal').style.display = 'none';
+        }
+        // Close modal if user clicks outside
+        window.onclick = function(event) {
+            let modal = document.getElementById('shareModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Family Memories</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #f5f0e8;
+            color: #3d2b1f;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 450px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+        .nav {
+            background: #3d2b1f;
+            padding: 15px 30px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .nav a {
+            color: #f5f0e8;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        .nav a:hover {
+            color: #b8943c;
+        }
+        .form-box {
+            background: #f5f0e8;
+            padding: 40px;
+            border-radius: 15px;
+            border: 2px solid #b8943c;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+        .form-box h1 {
+            color: #3d2b1f;
+            text-align: center;
+            font-size: 32px;
+            margin: 0 0 10px 0;
+        }
+        .form-box .subtitle {
+            color: #6b4c3a;
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+        label {
+            display: block;
+            color: #3d2b1f;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #b8943c;
+            border-radius: 8px;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+            font-family: inherit;
+            font-size: 16px;
+        }
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .btn-submit:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
+        }
+        .footer-links {
+            text-align: center;
+            margin-top: 20px;
+            color: #6b4c3a;
+        }
+        .footer-links a {
+            color: #6b1a2e;
+            font-weight: bold;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<div class="nav">
+    <div>
+        <a href="/">🏠 Home</a>
+        <span style="margin: 0 15px; color: #8b6b4a;">|</span>
+        <span style="color: #b8943c;">🔐 Login</span>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="form-box">
+        <h1>🔐 Welcome Back</h1>
+        <p class="subtitle">Login to your Family Memories account</p>
+
+        <form method="POST">
+
+            <label>Username</label>
+            <input type="text" name="username" required placeholder="Enter your username">
+
+            <label>Password</label>
+            <input type="password" name="password" required placeholder="Enter your password">
+
+            <button type="submit" class="btn-submit">🔐 Login</button>
+
+        </form>
+
+        <div class="footer-links">
+            Don't have an account? <a href="/register">Register</a>
+            <br><br>
+            <a href="/" style="color: #8b6b4a;">← Back to Home</a>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

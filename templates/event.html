@@ -1,32 +1,256 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>{{ event["name"] }}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Memories</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #f5f0e8;
+            color: #3d2b1f;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .nav {
+            background: #3d2b1f;
+            padding: 15px 30px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .nav a {
+            color: #f5f0e8;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        .nav a:hover {
+            color: #b8943c;
+        }
+        .header {
+            background: #f5f0e8;
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid #b8943c;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #3d2b1f;
+            font-size: 40px;
+            margin: 0 0 10px 0;
+        }
+        .header .subtitle {
+            color: #6b4c3a;
+            font-size: 20px;
+            margin: 5px 0;
+        }
+        .header .description {
+            color: #3d2b1f;
+            font-size: 18px;
+            margin: 15px 0 0 0;
+            font-style: italic;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: bold;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        .btn-primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6);
+        }
+        .btn-gold {
+            background: #b8943c;
+            color: white;
+            padding: 5px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+            display: inline-block;
+        }
+        .btn-gold:hover {
+            background: #a08030;
+        }
+        .memory-card {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            background: #faf6ef;
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: 1px solid #e8e0d5;
+            margin-bottom: 15px;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .memory-card:hover {
+            border-color: #b8943c;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .memory-thumb {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #e8e0d5;
+            border: 2px solid #b8943c;
+            flex-shrink: 0;
+        }
+        .memory-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .memory-thumb .no-photo {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8b6b4a;
+            font-size: 30px;
+        }
+        .memory-info {
+            flex: 1;
+        }
+        .memory-info h3 {
+            color: #3d2b1f;
+            font-size: 22px;
+            margin: 0 0 5px 0;
+        }
+        .memory-info .details {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .memory-info .details span {
+            color: #6b4c3a;
+            font-size: 14px;
+        }
+        .memory-info .story-preview {
+            color: #6b4c3a;
+            font-size: 14px;
+            margin: 8px 0 0 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 400px;
+        }
+        .memory-arrow {
+            color: #b8943c;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            background: #f5f0e8;
+            border-radius: 12px;
+            border: 2px dashed #b8943c;
+        }
+        .empty-state p {
+            color: #6b4c3a;
+            font-size: 18px;
+            margin: 0;
+        }
+    </style>
 </head>
 <body>
-    <h1>{{ event["name"] }}</h1>
 
-    <p><strong>Year:</strong> {{ event["year"] }}</p>
-    <p><strong>Location:</strong> {{ event["location"] }}</p>
-    <p>{{ event["description"] }}</p>
+<!-- Navigation -->
+<div class="nav">
+    <div>
+        <a href="/">🏠 Home</a>
+        <span style="margin: 0 15px; color: #8b6b4a;">|</span>
+        <a href="/family-members">👨‍👩‍👧‍👦 Family</a>
+        <span style="margin: 0 15px; color: #8b6b4a;">|</span>
+        <span style="color: #b8943c;">🏕️ {{ event.name }}</span>
+    </div>
+</div>
 
-    <p><a href="/add">➕ Add Adventure</a></p>
+<div class="container">
 
-    <h2>Adventures</h2>
+    <!-- Header -->
+    <div class="header">
+        <p style="color: #6b1a2e; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; margin: 0 0 5px 0;">🏕️ Adventure Page</p>
+        <h1>{{ event.name }}</h1>
+        <p class="subtitle">{{ event.month }} {{ event.year }} • {{ event.location }}</p>
+        {% if event.description %}
+        <p class="description">{{ event.description }}</p>
+        {% endif %}
+        <div style="margin-top: 15px;">
+            <a href="/edit-adventure-page/{{ event.id }}" class="btn-gold">✏️ Edit Adventure</a>
+        </div>
+    </div>
+
+    <!-- Create Memory Button -->
+    <div style="text-align: center; margin-bottom: 30px;">
+        <a href="/add" class="btn-primary">➕ Create a New Memory</a>
+    </div>
+
+    <!-- Memories List -->
+    <h2 style="color: #3d2b1f; font-size: 28px; border-bottom: 3px solid #b8943c; padding-bottom: 10px;">📖 Memories</h2>
 
     {% if posts %}
-        <ul>
-            {% for post in posts %}
-                <li>
-                    <strong>{{ post["title"] }}</strong><br>
-                    {{ post["date"] }}
-                </li>
-            {% endfor %}
-        </ul>
+        {% for post in posts %}
+        <a href="/memory/{{ post.id }}">
+            <div class="memory-thumb">
+                {% if post.adventure_photo %}
+                <img src="/static/uploads/{{ post.adventure_photo }}" alt="{{ post.title }}">
+                {% else %}
+                <div class="no-p <a href="/adventure/{{ event.id }}">
+                            {{ event.name }}
+                            <span>- {{ event.location }}</span>
+                        </a>hoto">📖</div>
+                {% endif %}
+            </div>
+
+            <div class="memory-info">
+                <h3>{{ post.title }}</h3>
+                <div class="details">
+                    {% if post.date %}
+                    <span>📅 {{ post.date }}</span>
+                    {% endif %}
+                    {% if post.adventure_day %}
+                    <span>📍 {{ post.adventure_day }}</span>
+                    {% endif %}
+                    {% if post.people %}
+                    <span>👨‍👩‍👧‍👦 {{ post.people }}</span>
+                    {% endif %}
+                </div>
+                {% if post.story %}
+                <p class="story-preview">{{ post.story[:100] }}{% if post.story|length > 100 %}...{% endif %}</p>
+                {% endif %}
+            </div>
+
+            <div class="memory-arrow">→</div>
+
+        </a>
+        {% endfor %}
     {% else %}
-        <p>No adventures have been added yet.</p>
+        <div class="empty-state">
+            <p>No memories yet. Click <strong>"Create a New Memory"</strong> to add the first one!</p>
+        </div>
     {% endif %}
 
-    <p><a href="/">← Back to Home</a></p>
+    <br>
+    <a href="/">← Back to Home</a>
+
+</div>
+
 </body>
 </html>

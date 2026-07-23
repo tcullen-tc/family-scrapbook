@@ -1,26 +1,289 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Family Memories</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #f5f0e8;
+            color: #3d2b1f;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: bold;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        .btn-primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6);
+        }
+        .btn-gold {
+            background: #b8943c;
+            color: white;
+            padding: 5px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+            display: inline-block;
+        }
+        .btn-gold:hover {
+            background: #a08030;
+        }
+        .card {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .featured {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 40px;
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .featured h2 {
+            font-size: 32px;
+            margin: 0;
+        }
+        .featured img {
+            max-width: 400px;
+            border-radius: 12px;
+            border: 4px solid white;
+            margin-top: 20px;
+        }
+        .nav {
+            background: #3d2b1f;
+            padding: 15px 30px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .nav a {
+            color: #f5f0e8;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        .nav a:hover {
+            color: #b8943c;
+        }
+        .rotating-text {
+            text-align: center;
+            color: #6b4c3a;
+            font-size: 20px;
+            font-style: italic;
+            min-height: 40px;
+            margin-bottom: 40px;
+            transition: opacity 0.5s ease;
+        }
+            /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+            .nav div {
+                width: 100%;
+                text-align: center;
+            }
+            .featured {
+                flex-direction: column !important;
+                text-align: center;
+            }
+            .featured img {
+                max-width: 300px !important;
+            }
+            .container {
+                padding: 10px;
+            }
+            ul {
+                padding: 0;
+            }
+            li {
+                flex-direction: column;
+                text-align: center;
+            }
+            li a {
+                font-size: 16px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Family Memories</h1>
 
-    <p>Every memory has a story. Every story deserves to be remembered.</p>
+<!-- Navigation -->
+<div class="nav" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; background: #3d2b1f; padding: 15px 30px; color: white;">
+    <div>
+        <a href="/">🏠 Home</a>
+        <span style="margin: 0 15px; color: #8b6b4a;">|</span>
+        <a href="/family-members">👨‍👩‍👧‍👦 Family</a>
+        <span style="margin: 0 15px; color: #8b6b4a;">|</span>
+        <a href="/map">🗺️ Map</a>
+    </div>
+    <div>
+        {% if current_user.is_authenticated %}
+        <span style="color: #b8943c;">👤 {{ current_user.username }}</span>
+        <span style="margin: 0 10px; color: #8b6b4a;">|</span>
+        <a href="/logout" style="color: #f5f0e8; text-decoration: none; background: #6b1a2e; padding: 5px 15px; border-radius: 5px; display: inline-block; white-space: nowrap;">🚪 Logout</a>
+        {% else %}
+        <a href="/login" style="color: #f5f0e8; text-decoration: none;">🔐 Login</a>
+        <span style="margin: 0 10px; color: #8b6b4a;">|</span>
+        <a href="/register" style="color: #b8943c; text-decoration: none;">📝 Register</a>
+        {% endif %}
+    </div>
+</div>
 
-    <p><a href="/create-event">➕ Create New Event</a></p>
+<div class="container">
 
-    <h2>Family Events</h2>
+    <!-- Page Header -->
+    <div style="text-align: center; padding: 20px 0; border-bottom: 3px solid #b8943c; margin-bottom: 30px;">
+        <h1 style="color: #3d2b1f; font-size: 42px; margin: 0;">🏠 Family Memories</h1>
+        <p style="color: #6b4c3a; font-size: 18px; margin: 5px 0 0 0; font-style: italic;">Home • Where all adventures begin</p>
+    </div>
 
-    <ul>
-        {% for event in events %}
-            <li>
-                <a href="/event/{{ event['id'] }}">
-                    <strong>{{ event["name"] }}</strong>
-                </a><br>
-                {{ event["year"] }} — {{ event["location"] }}
-            </li>
-        {% endfor %}
-    </ul>
+    <!-- Rotating Welcome Messages -->
+    <p id="rotating-message" class="rotating-text">
+        The best adventures begin with "Let's go."
+    </p>
+
+    <script>
+        const messages = [
+            'The best adventures begin with "Let\'s go."',
+            'Every adventure has a story. Every story deserves to be remembered.',
+            'Some adventures take us across the world. Others happen around a dinner table.',
+            'The greatest adventures are the ones shared with others.',
+            'Opening Family Memories should feel like rediscovering a favorite moment.',
+            'Life\'s greatest adventures are the ones we share.',
+            'Every page should make you want to stay a little longer.',
+            'Would this make our family smile ten years from now?',
+            'Relive the adventures that shaped your life.',
+            'Welcome home. Your memories are waiting.'
+        ];
+        let currentIndex = 0;
+        function rotateMessage() {
+            const element = document.getElementById('rotating-message');
+            element.style.opacity = '0';
+            setTimeout(() => {
+                currentIndex = (currentIndex + 1) % messages.length;
+                element.textContent = messages[currentIndex];
+                element.style.opacity = '1';
+            }, 500);
+        }
+        setInterval(rotateMessage, 8000);
+    </script>
+
+    <!-- Featured Adventure -->
+    {% if featured_adventure %}
+    <div class="featured" style="display: flex; gap: 30px; align-items: center; flex-wrap: wrap; padding: 40px;">
+        <div style="flex: 1; min-width: 200px; text-align: center;">
+            {% if featured_adventure.adventure_photo %}
+            <img src="/static/uploads/{{ featured_adventure.adventure_photo }}" alt="Featured Adventure" style="max-width: 400px; width: 100%; border-radius: 12px; border: 4px solid white;">
+            {% else %}
+            <div style="background: rgba(255,255,255,0.2); padding: 40px; border-radius: 12px;">
+                <p style="font-size: 48px; margin: 0;">📸</p>
+                <p style="font-size: 16px;">No featured photo yet</p>
+            </div>
+            {% endif %}
+        </div>
+        <div style="flex: 2; min-width: 250px; text-align: left;">
+            <h2 style="font-size: 32px; margin: 0;">🌟 FEATURED ADVENTURE</h2>
+            <p style="font-size: 24px; margin: 10px 0;">{{ featured_adventure.title }}</p>
+            <p style="font-size: 18px; opacity: 0.9;">{{ featured_adventure.event_name }}</p>
+            <div style="margin-top: 15px;">
+                <p style="font-family: 'Georgia', serif; font-size: 18px; font-style: italic; margin: 0;">
+                    ~ {{ featured_adventure.title }} ~
+                </p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- START A NEW ADVENTURE BUTTON -->
+    <div style="width: 100%; padding: 30px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; box-sizing: border-box; margin: 30px 0;">
+        <div style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;">
+            <a href="/create-adventure" style="flex: 1; min-width: 300px; padding: 25px; background: white; color: #4a5568; text-decoration: none; border-radius: 15px; font-size: 28px; font-weight: bold; text-align: center; box-shadow: 0 6px 25px rgba(0,0,0,0.25); transition: all 0.3s; letter-spacing: 2px; box-sizing: border-box;"
+               onmouseover="this.style.transform='scale(1.03)'; this.style.boxShadow='0 10px 40px rgba(0,0,0,0.35)';"
+               onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 6px 25px rgba(0,0,0,0.25)';">
+                ➕ START A NEW ADVENTURE
+            </a>
+        </div>
+    </div>
+    <!-- Hidden Message for Olive -->
+    <p style="color: #8b6b4a; font-size: 14px; text-align: center; margin-top: 5px;">
+        Hi Olive! 🍃
+    </p>
+    <!-- Adventures by Year -->
+    <div style="background: #f7fafc; border-radius: 15px; padding: 30px; margin-top: 30px;">
+        <h2 style="color: #3d2b1f; font-size: 28px; border-bottom: 3px solid #b8943c; padding-bottom: 10px;">📅 Adventures by Year</h2>
+
+        {% if events_by_year %}
+            {% for year, events in events_by_year.items() %}
+            <div style="margin: 30px 0;">
+                <h3 style="color: #4a5568; font-size: 30px; border-bottom: 3px solid #667eea; padding-bottom: 10px;">{{ year }}</h3>
+                <ul style="list-style: none; padding: 0;">
+                    {% for event in events %}
+                    <li style="display: flex; gap: 15px; align-items: center; padding: 15px 20px; background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 10px;">
+                        <!-- Adventure Thumbnail -->
+                        <div style="flex-shrink: 0; width: 60px; height: 60px; border-radius: 8px; overflow: hidden; background: #e8e0d5; border: 2px solid #b8943c;">
+                            {% if event.adventure_photo %}
+                            <img src="/static/uploads/{{ event.adventure_photo }}" alt="{{ event.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                            {% else %}
+                            <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #8b6b4a; font-size: 24px;">
+                                📖
+                            </div>
+                            {% endif %}
+                        </div>
+                        <!-- Adventure Info -->
+                        <div style="flex: 1;">
+                            <a href="/adventure/{{ event.id }}" style="text-decoration: none; color: #2d3748; font-size: 20px; font-weight: bold;">
+                                {{ event.name }}
+                                <span style="font-weight: normal; color: #718096; font-size: 16px;">- {{ event.month }} {{ event.year }} • {{ event.location }}</span>
+                            </a>
+                            {% if event.description %}
+                            <p style="color: #718096; margin: 5px 0 0 0; font-size: 16px;">{{ event.description }}</p>
+                            {% endif %}
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p style="color: #6b4c3a; font-size: 18px; text-align: center; padding: 20px;">
+                No adventures yet. Click <strong>"START A NEW ADVENTURE"</strong> to create your first one!
+            </p>
+        {% endif %}
+    </div>
+
+</div>
+    <!-- Hidden Message for Mila -->
+<p style="color: #8b6b4a; font-size: 14px; text-align: center; margin-top: 20px;">
+    Hi Mila! 🌸
+</p>
+
 </body>
 </html>

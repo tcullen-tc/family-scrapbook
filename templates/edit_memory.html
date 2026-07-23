@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Memories</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #f5f0e8;
+            color: #3d2b1f;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .nav {
+            background: #3d2b1f;
+            padding: 15px 30px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .nav a {
+            color: #f5f0e8;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        .nav a:hover {
+            color: #b8943c;
+        }
+        .form-box {
+            background: #f5f0e8;
+            padding: 40px;
+            border-radius: 15px;
+            border: 2px solid #b8943c;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+        .form-box h1 {
+            color: #3d2b1f;
+            text-align: center;
+            font-size: 32px;
+            margin: 0 0 10px 0;
+        }
+        .form-box .subtitle {
+            color: #6b4c3a;
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+        label {
+            display: block;
+            color: #3d2b1f;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #b8943c;
+            border-radius: 8px;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+            font-family: inherit;
+            font-size: 16px;
+        }
+        textarea {
+            resize: vertical;
+        }
+        .section-title {
+            color: #6b1a2e;
+            font-size: 20px;
+            margin: 25px 0 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #b8943c;
+        }
+        .photo-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .photo-item {
+            background: #faf6ef;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #b8943c;
+            text-align: center;
+            width: 140px;
+        }
+        .photo-item img {
+            width: 120px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .photo-item input[type="text"] {
+            width: 100%;
+            padding: 4px;
+            border: 1px solid #b8943c;
+            border-radius: 3px;
+            font-size: 11px;
+            box-sizing: border-box;
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+        .photo-item .remove-link {
+            color: #6b1a2e;
+            font-size: 12px;
+            margin-top: 5px;
+            text-decoration: none;
+            background: #f5f0e8;
+            padding: 2px 10px;
+            border-radius: 4px;
+            border: 1px solid #6b1a2e;
+            display: inline-block;
+        }
+        .photo-item .remove-link:hover {
+            background: #6b1a2e;
+            color: white;
+        }
+        .hero-preview {
+            margin-top: 10px;
+        }
+        .hero-preview img {
+            max-width: 200px;
+            max-height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #b8943c;
+        }
+        .hero-preview .label {
+            color: #6b4c3a;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .no-photos-msg {
+            background: #faf6ef;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px dashed #b8943c;
+            text-align: center;
+        }
+        .no-photos-msg p {
+            color: #8b6b4a;
+            font-size: 16px;
+            margin: 0;
+        }
+        .btn-save {
+            background: #2d5a27;
+            color: white;
+            padding: 14px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .btn-save:hover {
+            background: #1f3f1a;
+        }
+        .btn-cancel {
+            background: #8b6b4a;
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 16px;
+            display: inline-block;
+        }
+        .btn-cancel:hover {
+            background: #6b4c3a;
+        }
+        .btn-delete {
+            background: #6b1a2e;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .btn-delete:hover {
+            background: #4a1220;
+        }
+        .btn-upload {
+            background: #6b1a2e;
+            color: white;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .btn-upload:hover {
+            background: #4a1220;
+        }
+        .btn-captions {
+            background: #b8943c;
+            color: white;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .btn-captions:hover {
+            background: #a08030;
+        }
+        .action-row {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .file-hint {
+            color: #6b4c3a;
+            font-size: 12px;
+            margin-top: -10px;
+            margin-bottom: 15px;
+        }
+        .required {
+            color: #6b1a2e;
+        }
+        .upload-section {
+            background: #faf6ef;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #b8943c;
+            margin-bottom: 20px;
+        }
+        .separator {
+            border-top: 2px solid #b8943c;
+            margin: 30px 0 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<div class="nav">
+    <div>
+        <a href="/">🏠 Home</a>
+        <span style="margin: 0 15px; color: #8b6b4a;">|</span>
+        <a href="/family-members">👨‍👩‍👧‍👦 Family</a>
+        <span style="margin: 0 15px; color: #8b6b4a;">|</span>
+        <a href="/adventure/{{ adventure.id }}" style="color: #b8943c;">📖 {{ adventure.title }}</a>
+        <span style="margin: 0 15px; color: #8b6b4a;">|</span>
+        <span style="color: #b8943c;">✏️ Editing</span>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="form-box">
+        <h1>✏️ Edit Memory</h1>
+        <p class="subtitle">Update the details of this memory</p>
+
+        <!-- ===== MAIN FORM (Text fields + Additional Photos upload) ===== -->
+        <form method="POST" action="/update-adventure/{{ adventure.id }}" enctype="multipart/form-data">
+
+            <!-- Basic Information -->
+            <h3 class="section-title">📖 Basic Information</h3>
+
+            <label>Memory Title <span class="required">*</span></label>
+            <input type="text" name="title" value="{{ adventure.title }}" required>
+
+            <label>Location</label>
+            <input type="text" name="location" value="{{ adventure.adventure_day }}">
+
+            <label>Date</label>
+            <input type="date" name="date" value="{{ adventure.date }}">
+
+            <label>Who was there? (Select all that apply)</label>
+<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; padding: 10px; background: #faf6ef; border-radius: 8px; border: 1px solid #e8e0d5;">
+    {% if family_members %}
+        {% for member in family_members %}
+<label style="font-weight: normal; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+    <input type="checkbox" name="family_members" value="{{ member.id }}" 
+           {% if member.id in tagged_member_ids %}checked{% endif %}>
+    {% if member.nickname %}
+        {{ member.nickname }}
+    {% else %}
+        {{ member.name }}
+    {% endif %}
+    {% if member.nickname %}
+    <span style="color: #8b6b4a; font-size: 11px;">({{ member.name }})</span>
+    {% endif %}
+</label>
+        {% endfor %}
+    {% else %}
+        <p style="color: #6b4c3a; font-size: 14px; margin: 0;">
+            No family members yet. <a href="/add-family-member" style="color: #6b1a2e;">Add one now!</a>
+        </p>
+    {% endif %}
+</div>
+            <!-- The Story -->
+            <h3 class="section-title">📖 The Story</h3>
+
+            <label>Story</label>
+            <textarea name="story" rows="4">{{ adventure.story }}</textarea>
+
+            <label>Favorite Memory</label>
+            <textarea name="favorite_memory" rows="3">{{ adventure.favorite_memory }}</textarea>
+
+            <label>Funniest Moment</label>
+            <textarea name="funniest_moment" rows="3">{{ adventure.funniest_moment }}</textarea>
+
+            <label>Something Learned</label>
+            <textarea name="something_learned" rows="3">{{ adventure.something_learned }}</textarea>
+
+            <label>Thankful For</label>
+            <textarea name="thankful_for" rows="3">{{ adventure.thankful_for }}</textarea>
+
+                        <!-- Add More Photos -->
+            <h3 class="section-title">📷 Add More Photos</h3>
+
+            <label>Upload additional photos for this memory</label>
+            <input type="file" name="photos" accept="image/*" multiple>
+            <p class="file-hint">Hold Ctrl (or Cmd) to select multiple photos</p>
+
+            <label>Caption for new photos (optional - same caption for all)</label>
+            <input type="text" name="caption" placeholder="e.g., Campfire fun!">
+            <p class="file-hint">Note: All photos uploaded at once will share this caption. Click "Save Changes" to upload.</p>
+
+            <!-- Save Changes Button (inside main form) -->
+            <div class="action-row">
+                <button type="submit" class="btn-save">💾 Save Changes</button>
+                <a href="/adventure/{{ adventure.id }}" class="btn-cancel">Cancel</a>
+                <button type="button" class="btn-delete" onclick="confirmDelete()">🗑️ Delete Memory</button>
+            </div>
+
+        </form>
+        <!-- ===== END OF MAIN FORM ===== -->
+
+        <!-- ===== SAVE ALL CAPTIONS (SEPARATE FORM, OUTSIDE MAIN FORM) ===== -->
+        {% if additional_photos %}
+        <div class="separator"></div>
+        <h3 class="section-title">📷 Manage Photo Captions</h3>
+
+        <form method="POST" action="/update-all-captions/{{ adventure.id }}">
+            <div class="photo-grid">
+                {% for photo in additional_photos %}
+                <div class="photo-item">
+                    <img src="/static/uploads/{{ photo.filename }}" alt="{{ photo.caption or 'Photo' }}">
+                    <input type="text" name="caption_{{ photo.id }}" value="{{ photo.caption or '' }}" placeholder="Caption...">
+                    <a href="/delete-photo/{{ photo.id }}" class="remove-link" onclick="return confirm('Delete this photo?')">❌ Remove</a>
+                </div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn-captions">💾 Save All Captions</button>
+        </form>
+        {% endif %}
+
+        <!-- ===== HERO PHOTO UPLOAD (SEPARATE FORM, OUTSIDE MAIN FORM) ===== -->
+        <div class="separator"></div>
+        <h3 class="section-title">🌟 Change Hero Photo</h3>
+
+        <div class="upload-section">
+            <p style="color: #6b4c3a; font-size: 14px; margin-bottom: 10px;">
+                Upload a new hero photo for this memory.
+            </p>
+
+            {% if adventure.adventure_photo %}
+            <div class="hero-preview">
+                <img src="/static/uploads/{{ adventure.adventure_photo }}" alt="Current Hero Photo">
+                <p class="label">Current hero photo</p>
+            </div>
+            {% else %}
+            <p style="color: #6b4c3a; font-size: 14px;">No hero photo uploaded yet.</p>
+            {% endif %}
+
+            <form method="POST" action="/upload-photo/{{ adventure.id }}" enctype="multipart/form-data">
+                <input type="file" name="photo" accept="image/*">
+                <br>
+                <label style="font-weight: normal; font-size: 14px; margin-top: 10px; display: block;">Caption for hero photo:</label>
+                <input type="text" name="hero_caption" value="{{ adventure.hero_caption or '' }}" placeholder="e.g., Our amazing adventure!" style="width: 100%; padding: 8px; border: 1px solid #b8943c; border-radius: 5px; box-sizing: border-box; margin-bottom: 10px;">
+                <br>
+                <button type="submit" class="btn-upload">📷 Upload Hero Photo</button>
+            </form>
+            <p class="file-hint">Accepted: PNG, JPG, JPEG, GIF, WebP, HEIC</p>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    function confirmDelete() {
+        if (confirm('⚠️ Are you sure you want to delete this memory?\n\nThis will also delete all photos associated with it.\n\nThis action cannot be undone!')) {
+            window.location.href = "/delete-adventure/{{ adventure.id }}";
+        }
+    }
+</script>
+
+</body>
+</html>

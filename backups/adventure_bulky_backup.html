@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ adventure["title"] }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+
+    <p><a href="/event/{{ event['id'] }}">← Back to {{ event["name"] }}</a></p>
+
+    <h1 class="adventure-title">
+        {{ adventure["title"] }}
+    </h1>
+
+    <p class="adventure-subtitle">
+        A family adventure worth remembering.
+    </p>
+
+    <div class="adventure-layout">
+
+        <div class="adventure-photo-box">
+
+            {% if adventure["adventure_photo"] %}
+                <img src="{{ url_for('static', filename='uploads/' + adventure['adventure_photo']) }}"
+                     alt="Adventure Photo"
+                     class="adventure-photo">
+            {% else %}
+                <h2>📷 Adventure Photo</h2>
+
+                <p><strong>No Adventure Photo has been chosen yet.</strong></p>
+
+                <p>
+                    Before today's adventure comes to an end, gather your
+                    <strong>Adventure Crew</strong> and choose the one picture
+                    everyone agrees best represents the day.
+                </p>
+            {% endif %}
+
+            <form action="/upload-photo/{{ adventure['id'] }}" method="POST" enctype="multipart/form-data">
+                <input type="file" name="photo" accept="image/*">
+
+                <br><br>
+
+                <button type="submit" class="photo-button">
+                    {% if adventure["adventure_photo"] %}
+                        Replace Adventure Photo
+                    {% else %}
+                        Upload Adventure Photo
+                    {% endif %}
+                </button>
+            </form>
+
+        </div>
+
+        <div class="adventure-story-panel">
+
+            <p><strong>📅 Date:</strong> {{ adventure["date"] }}</p>
+            <p><strong>📍 Where:</strong> {{ adventure["adventure_day"] }}</p>
+            <p><strong>👨‍👩‍👧‍👦 Adventure Crew</strong><br>
+            {{ adventure["people"] }}</p>
+
+            <hr>
+
+            <h2>📖 Our Story</h2>
+            <p>{{ adventure["story"] }}</p>
+
+            <h2>❤️ Favorite Memory</h2>
+            <p>{{ adventure["favorite_memory"] }}</p>
+
+            <h2>😂 Biggest Laugh</h2>
+            <p>{{ adventure["funniest_moment"] }}</p>
+
+            <h2>🌱 Something We Discovered</h2>
+            <p>{{ adventure["something_learned"] }}</p>
+
+            <h2>🙏 Thankful Today</h2>
+            <p>{{ adventure["thankful_for"] }}</p>
+
+        </div>
+
+    </div>
+
+    <hr>
+
+    <h2>Photos</h2>
+    <p>No photos yet.</p>
+
+    <h2>Shared Memories</h2>
+    <p>Coming soon.</p>
+
+</body>
+</html>
