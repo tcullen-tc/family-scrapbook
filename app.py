@@ -9,7 +9,7 @@ from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut, GeocoderUnavailable
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-
+import logging
 app = Flask(__name__)
 app.secret_key = 'family-memories-secret-key'
 
@@ -428,7 +428,7 @@ def edit_adventure(adventure_id):
 
 @app.route("/update-adventure/<int:adventure_id>", methods=("POST",))
 def update_adventure(adventure_id):
-    print("UPDATE ADVENTURE CALLED")
+    app.logger.info("UPDATE ADVENTURE CALLED")
     title = request.form.get("title", "")
     location = request.form.get("location", "")
     date = request.form.get("date", "")
@@ -518,7 +518,7 @@ def update_adventure(adventure_id):
     
     conn.commit()
     conn.close()
-    print("Update complete!")
+    app.logger.info("Update complete!")
     return redirect(url_for("memory_detail", memory_id=adventure_id))
 
 # ==================== UPLOAD HERO PHOTO ====================
