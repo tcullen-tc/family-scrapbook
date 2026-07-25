@@ -595,8 +595,9 @@ def upload_photo(adventure_id):
 
 # ==================== UPLOAD ADDITIONAL PHOTOS ====================
 
-@app.route("/upload-adventure-photos/<int:adventure_id>", methods=("POST",))
+@app.route("/upload-adventure-photos/<int:adventure_id> ", methods=("POST",))
 def upload_adventure_photos(adventure_id):
+    print("=== UPLOAD ADVENTURE PHOTOS STARTED ===")
     print("=" * 50)
     print("UPLOAD ADDITIONAL PHOTOS CALLED")
     print("Adventure ID:", adventure_id)
@@ -620,6 +621,7 @@ def upload_adventure_photos(adventure_id):
     
     uploaded_count = 0
     for photo in files:
+        print(f"Processing file: {photo.filename}")
         if photo and allowed_file(photo.filename):
             # Check if it's a HEIC file
             is_heic = photo.filename.lower().endswith(('.heic', '.heif'))
