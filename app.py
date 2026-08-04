@@ -14,6 +14,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import logging
 app = Flask(__name__)
 app.secret_key = 'family-memories-secret-key'
+# Ensure the upload directory exists
+UPLOAD_FOLDER = os.path.join('static', 'uploads')
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # Email Configuration
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
@@ -279,14 +282,17 @@ def memory_detail(memory_id):
 
 # ==================== CREATE MEMORY ====================
 
-@app.route("/add", methods=("GET", "POST"))
-def add():
+@app.route("/add", methods=["GET", "POST"])
+@app.route("/add/<int:adventure_id>", methods=["GET", "POST"])
+def add(adventure_id=None):
     conn = get_db_connection()
     events = conn.execute("SELECT * FROM events ORDER BY year DESC").fetchall()
     family_members = conn.execute("SELECT * FROM family_members WHERE family_id = ? ORDER BY name", (current_user.family_id,)).fetchall()
     
     if request.method == "POST":
+        # Get the hidden adventure ID from the form
         event_id = request.form["event_id"]
+        
         cursor = conn.cursor()
         cursor.execute("""
             INSERT INTO posts (
@@ -308,7 +314,7 @@ def add():
             request.form["thankful_for"],
             ""
         ))
-        adventure_id = cursor.lastrowid
+        new_memory_id = cursor.lastrowid
         conn.commit()
 
         # Save family member tags
@@ -316,7 +322,7 @@ def add():
         for member_id in selected_members:
             conn.execute(
                 "INSERT INTO memory_people (memory_id, family_member_id) VALUES (?, ?)",
-                (adventure_id, member_id)
+                (new_memory_id, member_id)
             )
 
         # Handle hero photo
@@ -324,12 +330,12 @@ def add():
             photo = request.files["hero_photo"]
             if photo and photo.filename != "" and allowed_file(photo.filename):
                 filename = secure_filename(photo.filename)
-                filename = f"adventure_{adventure_id}_{filename}"
+                filename = f"adventure_{new_memory_id}_{filename}"
                 filepath = os.path.join(UPLOAD_FOLDER, filename)
                 photo.save(filepath)
                 conn.execute(
                     "UPDATE posts SET adventure_photo = ? WHERE id = ?",
-                    (filename, adventure_id)
+                    (filename, new_memory_id)
                 )
                 conn.commit()
                 print(f"Hero photo saved: {filename}")
@@ -341,21 +347,22 @@ def add():
             for idx, photo in enumerate(files):
                 if photo and photo.filename != "" and allowed_file(photo.filename):
                     filename = secure_filename(photo.filename)
-                    filename = f"adventure_{adventure_id}_{idx}_{filename}"
+                    filename = f"adventure_{new_memory_id}_{idx}_{filename}"
                     filepath = os.path.join(UPLOAD_FOLDER, filename)
                     photo.save(filepath)
                     conn.execute(
                         "INSERT INTO adventure_photos (family_id, adventure_id, filename, caption, display_order) VALUES (?, ?, ?, ?, ?)",
-                        (current_user.family_id, adventure_id, filename, caption, idx)
+                        (current_user.family_id, new_memory_id, filename, caption, idx)
                     )
                     conn.commit()
                     print(f"Additional photo saved: {filename}")
 
         conn.close()
-        return redirect(url_for("memory_detail", memory_id=adventure_id))
+        return redirect(url_for("memory_detail", memory_id=new_memory_id))
 
     conn.close()
-    return render_template("add.html", events=events, family_members=family_members)
+    # Pass the adventure_id to the template so it can be used in the hidden input
+    return render_template("add.html", events=events, family_members=family_members, adventure_id=adventure_id)
 
 # ==================== EDIT ADVENTURE (EVENT) ====================
 
