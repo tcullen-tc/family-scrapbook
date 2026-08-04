@@ -164,12 +164,16 @@ def home():
         return redirect(url_for("login"))
     
     conn = get_db_connection()
-    events = conn.execute("SELECT * FROM events ORDER BY year DESC").fetchall()
-        SELECT events.*, 
+    
+    # Get all events and attach one adventure_photo for each event (if any exist)
+    events = conn.execute("""
+    SELECT events.*, 
         (SELECT adventure_photo FROM posts WHERE event_id = events.id AND adventure_photo IS NOT NULL LIMIT 1) as adventure_photo
         FROM events 
         ORDER BY year DESC
     """).fetchall()
+    
+    # Get one random post with a photo to feature at the top of the page
     featured_adventure = conn.execute("""
         SELECT posts.*, events.name AS event_name
         FROM posts
@@ -178,13 +182,16 @@ def home():
         ORDER BY RANDOM()
         LIMIT 1
     """).fetchone()
+    
     conn.close()
+    
     events_by_year = {}
     for event in events:
         year = event["year"]
         if year not in events_by_year:
             events_by_year[year] = []
         events_by_year[year].append(event)
+        
     return render_template(
         "home.html",
         events_by_year=events_by_year,
