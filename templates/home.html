@@ -136,7 +136,7 @@
 <body>
 
 <!-- Navigation -->
-<div class="nav" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; background: #3d2b1f; padding: 15px 30px; color: white;">
+<div class="nav">
     <div>
         <a href="/">🏠 Home</a>
         <span style="margin: 0 15px; color: #8b6b4a;">|</span>
@@ -149,10 +149,6 @@
         <span style="color: #b8943c;">👤 {{ current_user.username }}</span>
         <span style="margin: 0 10px; color: #8b6b4a;">|</span>
         <a href="/logout" style="color: #f5f0e8; text-decoration: none; background: #6b1a2e; padding: 5px 15px; border-radius: 5px; display: inline-block; white-space: nowrap;">🚪 Logout</a>
-        {% else %}
-        <a href="/login" style="color: #f5f0e8; text-decoration: none;">🔐 Login</a>
-        <span style="margin: 0 10px; color: #8b6b4a;">|</span>
-        <a href="/register" style="color: #b8943c; text-decoration: none;">📝 Register</a>
         {% endif %}
     </div>
 </div>
