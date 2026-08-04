@@ -159,10 +159,14 @@ def logout():
 
 @app.route("/")
 def home():
+    # If user is not logged in, redirect to login page
+    if not current_user.is_authenticated:
+        return redirect(url_for("login"))
+    
     conn = get_db_connection()
-    events = conn.execute("""
+    events = conn.execute("SELECT * FROM events ORDER BY year DESC").fetchall()
         SELECT events.*, 
-               (SELECT adventure_photo FROM posts WHERE event_id = events.id AND adventure_photo IS NOT NULL LIMIT 1) as adventure_photo
+        (SELECT adventure_photo FROM posts WHERE event_id = events.id AND adventure_photo IS NOT NULL LIMIT 1) as adventure_photo
         FROM events 
         ORDER BY year DESC
     """).fetchall()
