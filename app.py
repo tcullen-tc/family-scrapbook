@@ -596,7 +596,7 @@ def upload_adventure_photos(adventure_id):
             conn.close()
             uploaded_count += 1
     
-    return redirect(url_for("edit_adventure", adventure_id=adventure_id))
+    return redirect(url_for("memory_detail", memory_id=adventure_id))
 
 # ==================== DELETE PHOTO ====================
 
