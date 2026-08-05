@@ -446,100 +446,78 @@ def edit_adventure(adventure_id):
 
 # ==================== UPDATE MEMORY ====================
 
-@app.route("/update-adventure/<int:adventure_id>", methods=("POST",))
-def update_adventure(adventure_id):
-    app.logger.info("UPDATE ADVENTURE CALLED")
-    title = request.form.get("title", "")
-    location = request.form.get("location", "")
-    date = request.form.get("date", "")
-    people = request.form.get("people", "")
-    story = request.form.get("story", "")
-    favorite_memory = request.form.get("favorite_memory", "")
-    funniest_moment = request.form.get("funniest_moment", "")
-    something_learned = request.form.get("something_learned", "")
-    thankful_for = request.form.get("thankful_for", "")
+@app.route("/upload-photo/<int:adventure_id>", methods=("POST",))
+def upload_photo(adventure_id):
+    print("=" * 50)
+    print("UPLOAD PHOTO CALLED")
+    print("Adventure ID:", adventure_id)
+    print("=" * 50)
     
-    conn = get_db_connection()
-    conn.execute("""
-        UPDATE posts 
-        SET title = ?,
-            adventure_day = ?,
-            date = ?,
-            people = ?,
-            story = ?,
-            favorite_memory = ?,
-            funniest_moment = ?,
-            something_learned = ?,
-            thankful_for = ?
-        WHERE id = ?
-    """, (
-        title, location, date, people, story,
-        favorite_memory, funniest_moment, something_learned, thankful_for,
-        adventure_id
-    ))
-    
-    # Handle additional photos upload
-    if "photos" in request.files:
-        files = request.files.getlist("photos")
-        caption = request.form.get("caption", "")
-        current_count = conn.execute(
-            "SELECT COUNT(*) FROM adventure_photos WHERE adventure_id = ?",
-            (adventure_id,)
-        ).fetchone()[0]
-        uploaded_count = 0
-        for photo in files:
-            if photo and photo.filename != "" and allowed_file(photo.filename):
-                is_heic = photo.filename.lower().endswith(('.heic', '.heif'))
-                original_name = os.path.splitext(photo.filename)[0]
-                safe_name = secure_filename(original_name)
-                if is_heic:
-                    try:
-                        img = Image.open(photo)
-                        if img.mode in ('RGBA', 'LA', 'P'):
-                            img = img.convert('RGB')
-                        filename = f"adventure_{adventure_id}_{uploaded_count}_{safe_name}.jpg"
-                        filepath = os.path.join(UPLOAD_FOLDER, filename)
-                        img.save(filepath, 'JPEG', quality=90)
-                        print(f"HEIC converted and saved: {filename}")
-                    except Exception as e:
-                        print(f"Error converting HEIC: {e}")
-                        continue
-                else:
-                    filename = secure_filename(photo.filename)
-                    filename = f"adventure_{adventure_id}_{uploaded_count}_{filename}"
-                    filepath = os.path.join(UPLOAD_FOLDER, filename)
-                    photo.save(filepath)
-                    print(f"Photo saved: {filename}")
-                conn.execute(
-                    "INSERT INTO adventure_photos (family_id, adventure_id, filename, caption, display_order) VALUES (?, ?, ?, ?, ?)",
-                    (current_user.family_id, adventure_id, filename, caption, current_count + uploaded_count)
-                )
-                uploaded_count += 1
-    
-    # Save all photo captions
-    photos = conn.execute("SELECT id FROM adventure_photos WHERE adventure_id = ?", (adventure_id,)).fetchall()
-    for photo in photos:
-        caption_key = f"caption_{photo['id']}"
-        caption = request.form.get(caption_key, "")
-        if caption:
-            conn.execute(
-                "UPDATE adventure_photos SET caption = ? WHERE id = ?",
-                (caption, photo['id'])
-            )
-    
-    # Save family member tags
-    conn.execute("DELETE FROM memory_people WHERE memory_id = ?", (adventure_id,))
-    selected_members = request.form.getlist("family_members")
-    for member_id in selected_members:
+    if "photo" not in request.files:
+        print("No photo in request")
+        return redirect(url_for("adventure_detail", adventure_id=adventure_id))
+
+    photo = request.files["photo"]
+    print("Photo filename:", photo.filename)
+
+    if photo.filename == "":
+        print("Empty filename")
+        return redirect(url_for("adventure_detail", adventure_id=adventure_id))
+
+    if photo and allowed_file(photo.filename):
+        is_heic = photo.filename.lower().endswith(('.heic', '.heif'))
+        original_name = os.path.splitext(photo.filename)[0]
+        safe_name = secure_filename(original_name)
+        
+        if is_heic:
+            try:
+                img = Image.open(photo)
+                if img.mode in ('RGBA', 'LA', 'P'):
+                    img = img.convert('RGB')
+                
+                # Resize image to max 1200px
+                max_size = 1200
+                if img.width > max_size or img.height > max_size:
+                    ratio = min(max_size / img.width, max_size / img.height)
+                    new_width = int(img.width * ratio)
+                    new_height = int(img.height * ratio)
+                    img = img.resize((new_width, new_height), Image.LANCZOS)
+                    print(f"Resized image to {new_width}x{new_height}")
+                
+                filename = f"adventure_{adventure_id}_{safe_name}.jpg"
+                filepath = os.path.join(UPLOAD_FOLDER, filename)
+                img.save(filepath, 'JPEG', quality=85)
+                print(f"HEIC converted and saved: {filename}")
+            except Exception as e:
+                print(f"Error converting HEIC: {e}")
+                return redirect(url_for("adventure_detail", adventure_id=adventure_id))
+        else:
+            filename = secure_filename(photo.filename)
+            filename = f"adventure_{adventure_id}_{filename}"
+            filepath = os.path.join(UPLOAD_FOLDER, filename)
+            photo.save(filepath)
+            print(f"Photo saved: {filename}")
+
+        conn = get_db_connection()
         conn.execute(
-            "INSERT INTO memory_people (memory_id, family_member_id) VALUES (?, ?)",
-            (adventure_id, member_id)
+            "UPDATE posts SET adventure_photo = ? WHERE id = ?",
+            (filename, adventure_id)
         )
-    
-    conn.commit()
-    conn.close()
-    app.logger.info("Update complete!")
-    return redirect(url_for("memory_detail", memory_id=adventure_id))
+        
+        # Save hero caption if provided
+        hero_caption = request.form.get("hero_caption", "")
+        if hero_caption:
+            conn.execute(
+                "UPDATE posts SET hero_caption = ? WHERE id = ?",
+                (hero_caption, adventure_id)
+            )
+            print(f"Hero caption saved: {hero_caption}")
+        
+        conn.commit()
+        conn.close()
+        print(f"Database updated: {filename}")
+
+    return redirect(url_for("adventure_detail", adventure_id=adventure_id))
 
 # ==================== UPLOAD HERO PHOTO ====================
 
