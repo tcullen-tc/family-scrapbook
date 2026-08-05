@@ -774,6 +774,9 @@ def update_all_captions(adventure_id):
 
 @app.route("/share-memory/<int:adventure_id>", methods=("POST",))
 def share_memory(adventure_id):
+    print("=== SHARE MEMORY FUNCTION STARTED ===")
+    print(f"Adventure ID: {adventure_id}")
+    
     from reportlab.lib.pagesizes import letter
     from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image as RLImage, PageBreak
     from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -789,55 +792,56 @@ def share_memory(adventure_id):
     if not recipient:
         return "Please enter a recipient email", 400
     
-    conn = get_db_connection()
-    adventure = conn.execute("SELECT * FROM posts WHERE id = ?", (adventure_id,)).fetchone()
-    event = conn.execute("SELECT * FROM events WHERE id = ?", (adventure["event_id"],)).fetchone()
-    additional_photos = conn.execute(
-        "SELECT * FROM adventure_photos WHERE adventure_id = ? ORDER BY display_order",
-        (adventure_id,)
-    ).fetchall()
-    conn.close()
-    
-    if adventure is None:
-        return "Memory not found", 404
-    
-    subject = f"Family Memory: {adventure['title']}"
-    html_body = build_email_html(adventure, event, personal_message)
-    
-    msg = Message(subject, recipients=[recipient])
-    msg.html = html_body
-    
-    if share_format == "pdf":
-        pdf_buffer = create_memory_pdf(adventure, event, additional_photos, personal_message)
-        msg.attach(f"{adventure['title']}.pdf", "application/pdf", pdf_buffer.getvalue())
-        if adventure['adventure_photo']:
-            try:
-                with app.open_resource(f"static/uploads/{adventure['adventure_photo']}") as fp:
-                    msg.attach(adventure['adventure_photo'], "image/jpeg", fp.read())
-            except:
-                pass
-    else:
-        if adventure['adventure_photo']:
-            try:
-                compressed = compress_image(f"static/uploads/{adventure['adventure_photo']}")
-                msg.attach(f"hero_{adventure['adventure_photo']}", "image/jpeg", compressed)
-            except Exception as e:
-                print(f"Could not attach hero photo: {e}")
-        for photo in additional_photos:
-            try:
-                compressed = compress_image(f"static/uploads/{photo['filename']}")
-                msg.attach(photo['filename'], "image/jpeg", compressed)
-            except Exception as e:
-                print(f"Could not attach photo: {e}")
-    
     try:
+        conn = get_db_connection()
+        adventure = conn.execute("SELECT * FROM posts WHERE id = ?", (adventure_id,)).fetchone()
+        event = conn.execute("SELECT * FROM events WHERE id = ?", (adventure["event_id"],)).fetchone()
+        additional_photos = conn.execute(
+            "SELECT * FROM adventure_photos WHERE adventure_id = ? ORDER BY display_order",
+            (adventure_id,)
+        ).fetchall()
+        conn.close()
+        
+        if adventure is None:
+            return "Memory not found", 404
+        
+        subject = f"Family Memory: {adventure['title']}"
+        html_body = build_email_html(adventure, event, personal_message)
+        
+        msg = Message(subject, recipients=[recipient])
+        msg.html = html_body
+        
+        if share_format == "pdf":
+            pdf_buffer = create_memory_pdf(adventure, event, additional_photos, personal_message)
+            msg.attach(f"{adventure['title']}.pdf", "application/pdf", pdf_buffer.getvalue())
+            if adventure['adventure_photo']:
+                try:
+                    with app.open_resource(f"static/uploads/{adventure['adventure_photo']}") as fp:
+                        msg.attach(adventure['adventure_photo'], "image/jpeg", fp.read())
+                except:
+                    pass
+        else:
+            if adventure['adventure_photo']:
+                try:
+                    compressed = compress_image(f"static/uploads/{adventure['adventure_photo']}")
+                    msg.attach(f"hero_{adventure['adventure_photo']}", "image/jpeg", compressed)
+                except Exception as e:
+                    print(f"Could not attach hero photo: {e}")
+            for photo in additional_photos:
+                try:
+                    compressed = compress_image(f"static/uploads/{photo['filename']}")
+                    msg.attach(photo['filename'], "image/jpeg", compressed)
+                except Exception as e:
+                    print(f"Could not attach photo: {e}")
+        
         print(f"Attempting to send email to: {recipient}")
         print(f"Subject: {subject}")
         mail.send(msg)
         print("Email sent successfully!")
         return render_template("share_success.html", recipient=recipient, memory_title=adventure['title'], adventure_id=adventure_id)
+    
     except Exception as e:
-        print(f"Error sending email: {str(e)}")
+        print(f"ERROR IN SHARE MEMORY: {e}")
         return f"Error sending email: {str(e)}", 500
 
 def build_email_html(adventure, event, personal_message):
